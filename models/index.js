@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const findOrCreate = require('mongoose-findorcreate')
 
 const UserSchema = new mongoose.Schema({
 	_id : mongoose.Schema.Types.ObjectId,
@@ -6,5 +7,6 @@ const UserSchema = new mongoose.Schema({
 	password : {type : String, required: true},
 })
 
+UserSchema.plugin(findOrCreate)
 const User = mongoose.model('User', UserSchema)
 module.exports = User
