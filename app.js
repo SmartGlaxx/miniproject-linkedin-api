@@ -3,8 +3,10 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const signupRoute = require('./routes')
-
+const uploadRoute = require('./routes/uploadRoutes')
 const app = express()
+const cloudinary = require('cloudinary').v2
+const fileUpload = require('express-fileUpload')
 
 mongoose.connect('mongodb+srv://smart:' + process.env.MYPASSWORD + '@cluster0.ewfya.mongodb.net/validprofits-auth?retryWrites=true&w=majority?authSourse=yourDB&w=1',
 	{useUnifiedTopology : true, useNewUrlParser : true, useFindAndModify : false})
@@ -12,6 +14,14 @@ mongoose.connect('mongodb+srv://smart:' + process.env.MYPASSWORD + '@cluster0.ew
 
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())
+app.use(fileUpload({useTempFiles : true}))
+
+// app.use(express.static('./public'))
+cloudinary.config({ 
+  cloud_name: 'smart-codes', 
+  api_key: '668982889162186', 
+  api_secret: 'oFhZkyC-QeNAZLL2fHgy_NIt4f8' 
+});
 
 
 app.options("/*", function(req, res, next){
@@ -26,6 +36,7 @@ app.all('*', function(req, res, next) {
 });
 
 app.use('/', signupRoute)
+app.use('/upload', uploadRoute)
 
 app.use((req, res, next)=>{
     const error = new Error('An error occured')
